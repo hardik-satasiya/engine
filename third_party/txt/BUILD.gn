@@ -28,6 +28,14 @@ config("txt_config") {
   include_dirs = [ "src" ]
 }
 
+config("allow_posix_names") {
+  if (is_win && is_clang) {
+    # POSIX names of many functions are marked deprecated by default;
+    # disable that since they are used for cross-platform compatibility.
+    defines = [ "_CRT_NONSTDC_NO_DEPRECATE" ]
+  }
+}
+
 source_set("txt") {
   defines = []
   if (flutter_use_fontconfig) {
@@ -296,6 +304,8 @@ executable("txt_unittests") {
     ]
   }
 
+  configs += [ ":allow_posix_names" ]
+
   deps = [
            ":txt",
            ":txt_test_utils",
@@ -322,4 +332,10 @@ executable("txt_benchmarks") {
            "//third_party/benchmark",
            ":txt_fixtures",
          ] + txt_common_executable_deps
+
+  if (flutter_enable_skshaper) {
+    sources += [ "benchmarks/skparagraph_benchmarks.cc" ]
+
+    deps += [ "//third_party/skia/modules/skparagraph" ]
+  }
 }

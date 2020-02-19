@@ -159,7 +159,9 @@ void _testEngineSemanticsOwner() {
 </sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('clears semantics tree when disabled', () {
     expect(semantics().debugSemanticsTree, isEmpty);
@@ -239,7 +241,9 @@ void _testHeader() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 }
 
 void _testLongestIncreasingSubsequence() {
@@ -325,7 +329,9 @@ void _testContainer() {
     expect(container.style.transformOrigin, '');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('container node compensates for rect offset', () async {
     semantics()
@@ -356,13 +362,15 @@ void _testContainer() {
     final html.Element container =
         html.document.querySelector('flt-semantics-container');
 
-    expect(parentElement.style.transform, 'translate(10px, 10px)');
+    expect(parentElement.style.transform, 'matrix(1, 0, 0, 1, 10, 10)');
     expect(parentElement.style.transformOrigin, '0px 0px 0px');
     expect(container.style.transform, 'translate(-10px, -10px)');
     expect(container.style.transformOrigin, '0px 0px 0px');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 }
 
 void _testVerticalScrolling() {
@@ -386,7 +394,9 @@ void _testVerticalScrolling() {
 </sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('scrollable node with children has a container node', () async {
     semantics()
@@ -420,7 +430,9 @@ void _testVerticalScrolling() {
     expect(scrollable.scrollTop, 0);
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('scrollable node dispatches scroll events', () async {
     final StreamController<int> idLogController = StreamController<int>();
@@ -502,7 +514,11 @@ void _testVerticalScrolling() {
     expect(scrollable.scrollTop, 10);
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50590
+      skip: browserEngine == BrowserEngine.webkit ||
+          browserEngine == BrowserEngine.edge);
 }
 
 void _testHorizontalScrolling() {
@@ -526,7 +542,9 @@ void _testHorizontalScrolling() {
 </sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('scrollable node with children has a container node', () async {
     semantics()
@@ -560,7 +578,9 @@ void _testHorizontalScrolling() {
     expect(scrollable.scrollLeft, 0);
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('scrollable node dispatches scroll events', () async {
     final SemanticsActionLogger logger = SemanticsActionLogger();
@@ -623,7 +643,11 @@ void _testHorizontalScrolling() {
     expect(scrollable.scrollLeft, 10);
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50590
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.webkit ||
+          browserEngine == BrowserEngine.edge);
 }
 
 void _testIncrementables() {
@@ -649,7 +673,9 @@ void _testIncrementables() {
 </sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('increments', () async {
     final SemanticsActionLogger logger = SemanticsActionLogger();
@@ -683,7 +709,9 @@ void _testIncrementables() {
     expect(await logger.actionLog.first, ui.SemanticsAction.increase);
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('decrements', () async {
     final SemanticsActionLogger logger = SemanticsActionLogger();
@@ -717,7 +745,9 @@ void _testIncrementables() {
     expect(await logger.actionLog.first, ui.SemanticsAction.decrease);
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders a node that can both increment and decrement', () async {
     semantics()
@@ -745,7 +775,9 @@ void _testIncrementables() {
 </sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 }
 
 void _testTextField() {
@@ -771,7 +803,9 @@ void _testTextField() {
 </sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   // TODO(yjbanov): this test will need to be adjusted for Safari when we add
   //                Safari testing.
@@ -807,7 +841,9 @@ void _testTextField() {
 
     semantics().semanticsEnabled = false;
   }, // TODO(nurhan): https://github.com/flutter/flutter/issues/46638
-      skip: (browserEngine == BrowserEngine.firefox));
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50590
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: (browserEngine != BrowserEngine.blink));
 }
 
 void _testCheckables() {
@@ -834,7 +870,9 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders a switched on disabled switch element', () async {
     semantics()
@@ -858,7 +896,9 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders a switched off switch element', () async {
     semantics()
@@ -882,7 +922,10 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
+
   test('renders a checked checkbox', () async {
     semantics()
       ..debugOverrideTimestampFunction(() => _testTime)
@@ -906,7 +949,9 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders a checked disabled checkbox', () async {
     semantics()
@@ -930,7 +975,9 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders an unchecked checkbox', () async {
     semantics()
@@ -954,7 +1001,9 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders a checked radio button', () async {
     semantics()
@@ -980,7 +1029,9 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders a checked disabled radio button', () async {
     semantics()
@@ -1005,7 +1056,9 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders an unchecked checkbox', () async {
     semantics()
@@ -1030,7 +1083,9 @@ void _testCheckables() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 }
 
 void _testTappable() {
@@ -1057,7 +1112,9 @@ void _testTappable() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders a disabled tappable widget', () async {
     semantics()
@@ -1081,7 +1138,9 @@ void _testTappable() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 }
 
 void _testImage() {
@@ -1106,7 +1165,9 @@ void _testImage() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders an image with a child node and with a label', () async {
     semantics()
@@ -1136,7 +1197,9 @@ void _testImage() {
 </sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders an image with no child nodes without a label', () async {
     semantics()
@@ -1157,7 +1220,9 @@ void _testImage() {
         '''<sem role="img" style="filter: opacity(0%); color: rgba(0, 0, 0, 0)"></sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('renders an image with a child node and without a label', () async {
     semantics()
@@ -1186,7 +1251,9 @@ void _testImage() {
 </sem>''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 }
 
 void _testLiveRegion() {
@@ -1211,7 +1278,9 @@ void _testLiveRegion() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 
   test('does not render a live region if there is no label', () async {
     semantics()
@@ -1233,7 +1302,9 @@ void _testLiveRegion() {
 ''');
 
     semantics().semanticsEnabled = false;
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
+      skip: browserEngine == BrowserEngine.edge);
 }
 
 void expectSemanticsTree(String semanticsHtml) {

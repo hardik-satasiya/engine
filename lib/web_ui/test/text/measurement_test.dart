@@ -29,14 +29,19 @@ typedef MeasurementTestBody = void Function(TextMeasurementService instance);
 
 /// Runs the same test twice - once with dom measurement and once with canvas
 /// measurement.
-void testMeasurements(String description, MeasurementTestBody body) {
+void testMeasurements(String description, MeasurementTestBody body, {
+  bool skipDom,
+  bool skipCanvas,
+}) {
   test(
     '$description (dom)',
     () => body(TextMeasurementService.domInstance),
+    skip: skipDom,
   );
   test(
     '$description (canvas)',
     () => body(TextMeasurementService.canvasInstance),
+    skip: skipCanvas,
   );
 }
 
@@ -381,6 +386,7 @@ void main() async {
           expect(result.lines, isNull);
         }
       },
+      skipDom: browserEngine == BrowserEngine.webkit,
     );
 
     testMeasurements(
@@ -795,6 +801,7 @@ void main() async {
           expect(result.lines, isNull);
         }
       },
+      skipDom: browserEngine == BrowserEngine.webkit,
     );
 
     testMeasurements('respects max lines', (TextMeasurementService instance) {

@@ -9,6 +9,7 @@
 
 #include "flutter/flow/layers/layer_tree.h"
 #include "flutter/flow/layers/transform_layer.h"
+#include "flutter/fml/build_config.h"
 #include "flutter/fml/make_copyable.h"
 #include "flutter/fml/mapping.h"
 #include "flutter/runtime/dart_vm.h"
@@ -218,6 +219,9 @@ Settings ShellTest::CreateSettingsForFixture() {
   settings.isolate_create_callback = [this]() {
     native_resolver_->SetNativeResolverForIsolate();
   };
+#if OS_FUCHSIA
+  settings.verbose_logging = true;
+#endif
   SetSnapshotsAndAssets(settings);
   return settings;
 }
@@ -254,9 +258,10 @@ std::unique_ptr<Shell> ShellTest::CreateShell(Settings settings,
   return Shell::Create(
       task_runners, settings,
       [vsync_clock, &create_vsync_waiter](Shell& shell) {
-        return ShellTestPlatformView::Create(shell, shell.GetTaskRunners(),
-                                             vsync_clock,
-                                             std::move(create_vsync_waiter));
+        return ShellTestPlatformView::Create(
+            shell, shell.GetTaskRunners(), vsync_clock,
+            std::move(create_vsync_waiter),
+            ShellTestPlatformView::BackendType::kDefaultBackend);
       },
       [](Shell& shell) {
         return std::make_unique<Rasterizer>(shell, shell.GetTaskRunners());

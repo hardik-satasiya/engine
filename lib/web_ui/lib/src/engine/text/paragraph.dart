@@ -17,12 +17,14 @@ class EngineLineMetrics implements ui.LineMetrics {
     this.lineNumber,
   })  : text = null,
         startIndex = -1,
-        endIndex = -1;
+        endIndex = -1,
+        endIndexWithoutNewlines = -1;
 
   EngineLineMetrics.withText(
     this.text, {
     @required this.startIndex,
     @required this.endIndex,
+    @required this.endIndexWithoutNewlines,
     @required this.hardBreak,
     this.ascent,
     this.descent,
@@ -33,6 +35,9 @@ class EngineLineMetrics implements ui.LineMetrics {
     this.baseline,
     @required this.lineNumber,
   })  : assert(text != null),
+        assert(startIndex != null),
+        assert(endIndex != null),
+        assert(endIndexWithoutNewlines != null),
         assert(hardBreak != null),
         assert(width != null),
         assert(left != null),
@@ -49,6 +54,10 @@ class EngineLineMetrics implements ui.LineMetrics {
   /// When the line contains an overflow, then [endIndex] goes until the end of
   /// the text and doesn't stop at the overflow cutoff.
   final int endIndex;
+
+  /// The index (exclusive) in the text where this line ends, ignoring newline
+  /// characters.
+  final int endIndexWithoutNewlines;
 
   @override
   final bool hardBreak;
@@ -378,17 +387,61 @@ class EngineParagraph implements ui.Paragraph {
 
   @override
   ui.TextPosition getPositionForOffset(ui.Offset offset) {
-    if (_plainText == null) {
+    final List<EngineLineMetrics> lines = _measurementResult.lines;
+    if (lines == null) {
       return getPositionForMultiSpanOffset(offset);
     }
-    final double dx = offset.dx - _alignOffset;
+
+    // [offset] is above all the lines.
+    if (offset.dy < 0) {
+      return ui.TextPosition(
+        offset: 0,
+        affinity: ui.TextAffinity.downstream,
+      );
+    }
+
+    final int lineNumber = offset.dy ~/ _measurementResult.lineHeight;
+
+    // [offset] is below all the lines.
+    if (lineNumber >= lines.length) {
+      return ui.TextPosition(
+        offset: _plainText.length,
+        affinity: ui.TextAffinity.upstream,
+      );
+    }
+
+    final EngineLineMetrics lineMetrics = lines[lineNumber];
+    final double lineLeft = lineMetrics.left;
+    final double lineRight = lineLeft + lineMetrics.width;
+
+    // [offset] is to the left of the line.
+    if (offset.dx <= lineLeft) {
+      return ui.TextPosition(
+        offset: lineMetrics.startIndex,
+        affinity: ui.TextAffinity.downstream,
+      );
+    }
+
+    // [offset] is to the right of the line.
+    if (offset.dx >= lineRight) {
+      return ui.TextPosition(
+        offset: lineMetrics.endIndexWithoutNewlines,
+        affinity: ui.TextAffinity.upstream,
+      );
+    }
+
+    // If we reach here, it means the [offset] is somewhere within the line. The
+    // code below will do a binary search to find where exactly the [offset]
+    // falls within the line.
+
+    final double dx = offset.dx - lineMetrics.left;
     final TextMeasurementService instance = _measurementService;
 
-    int low = 0;
-    int high = _plainText.length;
+    int low = lineMetrics.startIndex;
+    int high = lineMetrics.endIndexWithoutNewlines;
     do {
       final int current = (low + high) ~/ 2;
-      final double width = instance.measureSubstringWidth(this, 0, current);
+      final double width = instance.measureSubstringWidth(this, lineMetrics.startIndex, current);
       if (width < dx) {
         low = current;
       } else if (width > dx) {
@@ -403,8 +456,8 @@ class EngineParagraph implements ui.Paragraph {
       return ui.TextPosition(offset: high, affinity: ui.TextAffinity.upstream);
     }
 
-    final double lowWidth = instance.measureSubstringWidth(this, 0, low);
-    final double highWidth = instance.measureSubstringWidth(this, 0, high);
+    final double lowWidth = instance.measureSubstringWidth(this, lineMetrics.startIndex, low);
+    final double highWidth = instance.measureSubstringWidth(this, lineMetrics.startIndex, high);
 
     if (dx - lowWidth < highWidth - dx) {
       // The offset is closer to the low index.
